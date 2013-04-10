@@ -1,6 +1,6 @@
 #!/bin/bash
 
-DEST=`pwd`/build/ffmpeg && rm -rf $DEST
+DEST=`pwd`/../build/ffmpeg && rm -rf $DEST
 SOURCE=`pwd`/ffmpeg
 
 if [ -d ffmpeg ]; then
@@ -53,22 +53,43 @@ FFMPEG_FLAGS="--target-os=linux \
   --disable-filters \
   --disable-devices \
   --disable-everything \
-  --enable-protocols  \
-  --enable-parsers \
-  --enable-demuxers \
-  --enable-decoders \
+
+  --enable-protocol=http \
+  --enable-protocol=rtsp \
+  --enable-protocol=mmsh \
+
+  --enable-parser=mpegaudio \
+  --enable-parser=aac \
+  --enable-parser=aac_latm \
+  
+  --enable-demuxer=mp3 \
+  --enable-demuxer=wav \
+  --enable-demuxer=aac \
+  --enable-demuxer=applehttp \
+  --enable-demuxer=mpegts \
+  --enable-demuxer=ogg \
+  --enable-demuxer=rtsp \
+
+  --enable-decoder=mp3 \
+  --enable-decoder=mp3adu \
+  --enable-decoder=mp3adufloat \
+  --enable-decoder=mp3float \
+  --enable-decoder=mp3on4 \
+  --enable-decoder=mp3on4floats \
+  --enable-decoder=aac \
+  --enable-decoder=aac_latm \
+  --enable-decoder=ac3 \
+  --enable-decoder=vorbis \
+  --enable-decoder=wmav2 \
+
   --enable-bsfs \
   --enable-network \
   --enable-swscale  \
-  --disable-demuxer=sbg \
-  --disable-demuxer=dts \
-  --disable-parser=dca \
-  --disable-decoder=dca \
   --enable-asm \
   --enable-version3"
 
 
-for version in neon armv7 vfp armv6; do
+for version in armeabi armeabi-v7a; do
 
   cd $SOURCE
 
@@ -77,7 +98,7 @@ for version in neon armv7 vfp armv6; do
       EXTRA_CFLAGS="-march=armv7-a -mfpu=neon -mfloat-abi=softfp -mvectorize-with-neon-quad"
       EXTRA_LDFLAGS="-Wl,--fix-cortex-a8"
       ;;
-    armv7)
+    armeabi-v7a)
       EXTRA_CFLAGS="-march=armv7-a -mfpu=vfpv3-d16 -mfloat-abi=softfp"
       EXTRA_LDFLAGS="-Wl,--fix-cortex-a8"
       ;;
@@ -85,7 +106,7 @@ for version in neon armv7 vfp armv6; do
       EXTRA_CFLAGS="-march=armv6 -mfpu=vfp -mfloat-abi=softfp"
       EXTRA_LDFLAGS=""
       ;;
-    armv6)
+    armeabi)
       EXTRA_CFLAGS="-march=armv6"
       EXTRA_LDFLAGS=""
       ;;
